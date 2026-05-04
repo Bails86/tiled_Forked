@@ -31,6 +31,7 @@
 #include "tileanimationdriver.h"
 #include "utils.h"
 #include "zoomable.h"
+#include "QGraphicsWidget.h"
 
 #include <QApplication>
 #include <QCursor>
@@ -39,6 +40,8 @@
 #include <QPinchGesture>
 #include <QScrollBar>
 #include <QWheelEvent>
+
+#include <QDebug>
 
 #ifndef QT_NO_OPENGL
 
@@ -627,6 +630,9 @@ void MapView::mouseMoveEvent(QMouseEvent *event)
     QGraphicsView::mouseMoveEvent(event);
     mLastMousePos = event->globalPos();
     mLastMouseScenePos = mapToScene(viewport()->mapFromGlobal(mLastMousePos));
+
+    hoverTileName(mLastMouseScenePos);
+
 }
 
 void MapView::handlePinchGesture(QPinchGesture *pinch)
@@ -649,6 +655,44 @@ void MapView::adjustCenterFromMousePosition(QPoint mousePos)
     const QPointF mouseScenePos = mapToScene(view->mapFromGlobal(mousePos));
     const QPointF diff = viewCenterScenePos - mouseScenePos;
     forceCenterOn(mLastMouseScenePos + diff);
+}
+
+int MapView::hoverTileName(QPointF mousePos)
+{
+
+    //Grabs reference to renderer
+    MapRenderer *renderer = mMapDocument->renderer();
+
+    //Grabs the tile coordinates via the pixel
+    QPointF tileCoordinate = renderer->pixelToTileCoords(mousePos);
+
+    //Rounds the result up to exact coordinates to be compatible
+    QPoint tileCoordsToPoint = tileCoordinate.toPoint();
+
+    //Grabs a reference to the layer currently in focus
+    Layer *layer = mMapDocument->currentLayer();
+
+
+    //Ensuring that the layer does in fact transfer into a TileLayer
+    if(TileLayer *tileLayer = dynamic_cast<TileLayer*>(layer))
+    {
+        //Grabbing the cell item from the tileLayer coordinates
+        Cell cell = tileLayer->cellAt(tileCoordsToPoint);
+        int id = cell.tileId();
+
+        if(lastHoveredCellId != id)
+        {
+            //Grabbing the cell ID from the found cell
+            qDebug() << "Tile: " << id;
+            lastHoveredCellId = id;
+        }
+
+
+        return id;
+    } else
+    {
+        return 0;
+    }
 }
 
 #include "moc_mapview.cpp"
