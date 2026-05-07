@@ -627,8 +627,11 @@ void MapView::focusInEvent(QFocusEvent *event)
 void MapView::mouseMoveEvent(QMouseEvent *event)
 {
     QGraphicsView::mouseMoveEvent(event);
+
     mLastMousePos = event->globalPos();
     mLastMouseScenePos = mapToScene(viewport()->mapFromGlobal(mLastMousePos));
+
+    hoverTileName(mLastMouseScenePos);
 }
 
 void MapView::handlePinchGesture(QPinchGesture *pinch)
@@ -665,17 +668,25 @@ int MapView::hoverTileName(QPointF mousePos)
 
     if (TileLayer *tileLayer = dynamic_cast<TileLayer*>(layer)) {
         Cell cell = tileLayer->cellAt(tileCoordsToPoint);
-        int id = cell.tileId();
         Tile *tile = cell.tile();
 
-        if (lastHoveredCellId != id) {
-            lastHoveredCellId = id;
-            if (tile && !tile->id()) {
-                QToolTip::showText(QCursor::pos(), QStringLiteral("Tile ID: %1").arg(id), this);
-            } else {
-                QToolTip::showText(QCursor::pos(), QStringLiteral("unknown"), this);
-            }
-        }
+        if(!tile)
+            return 0;
+
+        const int id = tile->id();
+
+        if (lastHoveredCellId == id)
+            return id;
+
+        lastHoveredCellId = id;
+
+        QString tilename = tile->property(QStringLiteral("name")).toString();
+
+        if (tilename.isEmplty())
+            tileName = QStringLiteral("Tile ID: %1").arg(id);
+
+        QToolTip::showText(QCursor::pos(), tilename, viewport());
+
         return id;
     }
     return 0;
