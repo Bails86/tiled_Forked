@@ -42,6 +42,9 @@
 #include <QWheelEvent>
 
 #include <QDebug>
+#include <QToolTip>
+#include "tile.h"
+#include "tilelayer.h"
 
 #ifndef QT_NO_OPENGL
 
@@ -657,42 +660,33 @@ void MapView::adjustCenterFromMousePosition(QPoint mousePos)
     forceCenterOn(mLastMouseScenePos + diff);
 }
 
+
 int MapView::hoverTileName(QPointF mousePos)
 {
+    if (!mMapDocument)
+        return 0;
 
-    //Grabs reference to renderer
     MapRenderer *renderer = mMapDocument->renderer();
-
-    //Grabs the tile coordinates via the pixel
     QPointF tileCoordinate = renderer->pixelToTileCoords(mousePos);
-
-    //Rounds the result up to exact coordinates to be compatible
     QPoint tileCoordsToPoint = tileCoordinate.toPoint();
-
-    //Grabs a reference to the layer currently in focus
     Layer *layer = mMapDocument->currentLayer();
 
-
-    //Ensuring that the layer does in fact transfer into a TileLayer
-    if(TileLayer *tileLayer = dynamic_cast<TileLayer*>(layer))
-    {
-        //Grabbing the cell item from the tileLayer coordinates
+    if (TileLayer *tileLayer = dynamic_cast<TileLayer*>(layer)) {
         Cell cell = tileLayer->cellAt(tileCoordsToPoint);
         int id = cell.tileId();
+        Tile *tile = cell.tile();
 
-        if(lastHoveredCellId != id)
-        {
-            //Grabbing the cell ID from the found cell
-            qDebug() << "Tile: " << id;
+        if (lastHoveredCellId != id) {
             lastHoveredCellId = id;
+            if (tile && !tile->name().isEmpty()) {
+                QToolTip::showText(QCursor::pos(), tile->name(), this);
+            } else {
+                QToolTip::showText(QCursor::pos(), QString("Tile ID: %1").arg(id), this);
+            }
         }
-
-
         return id;
-    } else
-    {
-        return 0;
     }
+    return 0;
 }
 
 #include "moc_mapview.cpp"

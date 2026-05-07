@@ -147,6 +147,7 @@ private:
     Zoomable *mZoomable;
 
     PanDirections mPanDirections;
+    int lastHoveredCellId = -1;
     TileAnimationDriver *mPanningDriver;
 };
 
