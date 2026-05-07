@@ -101,6 +101,9 @@ protected:
 
     void adjustCenterFromMousePosition(QPoint mousePos);
 
+    int hoverTileName(QPointF mousePos);
+
+
 signals:
     void focused();
     void viewRectChanged();
@@ -142,6 +145,7 @@ private:
     Zoomable *mZoomable;
 
     PanDirections mPanDirections;
+    int lastHoveredCellId = -1;
     TileAnimationDriver *mPanningDriver;
 };
 

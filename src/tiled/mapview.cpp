@@ -40,6 +40,10 @@
 #include <QScrollBar>
 #include <QWheelEvent>
 
+#include <QToolTip>
+#include "tile.h"
+#include "tilelayer.h"
+
 #ifndef QT_NO_OPENGL
 
 // Needed to avoid include issue when compiling with mingw_900
@@ -649,6 +653,35 @@ void MapView::adjustCenterFromMousePosition(QPoint mousePos)
     const QPointF mouseScenePos = mapToScene(view->mapFromGlobal(mousePos));
     const QPointF diff = viewCenterScenePos - mouseScenePos;
     forceCenterOn(mLastMouseScenePos + diff);
+}
+
+
+int MapView::hoverTileName(QPointF mousePos)
+{
+    if (!mMapDocument)
+        return 0;
+
+    MapRenderer *renderer = mMapDocument->renderer();
+    QPointF tileCoordinate = renderer->pixelToTileCoords(mousePos);
+    QPoint tileCoordsToPoint = tileCoordinate.toPoint();
+    Layer *layer = mMapDocument->currentLayer();
+
+    if (TileLayer *tileLayer = dynamic_cast<TileLayer*>(layer)) {
+        Cell cell = tileLayer->cellAt(tileCoordsToPoint);
+        int id = cell.tileId();
+        Tile *tile = cell.tile();
+
+        if (lastHoveredCellId != id) {
+            lastHoveredCellId = id;
+            if (tile && !tile->name().isEmpty()) {
+                QToolTip::showText(QCursor::pos(), tile->name(), this);
+            } else {
+                QToolTip::showText(QCursor::pos(), QString("Tile ID: %1").arg(id), this);
+            }
+        }
+        return id;
+    }
+    return 0;
 }
 
 #include "moc_mapview.cpp"
