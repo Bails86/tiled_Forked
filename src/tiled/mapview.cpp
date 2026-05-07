@@ -31,6 +31,7 @@
 #include "tileanimationdriver.h"
 #include "utils.h"
 #include "zoomable.h"
+#include "QGraphicsWidget.h"
 
 #include <QApplication>
 #include <QCursor>
@@ -40,6 +41,7 @@
 #include <QScrollBar>
 #include <QWheelEvent>
 
+#include <QDebug>
 #include <QToolTip>
 #include "tile.h"
 #include "tilelayer.h"
@@ -631,6 +633,9 @@ void MapView::mouseMoveEvent(QMouseEvent *event)
     QGraphicsView::mouseMoveEvent(event);
     mLastMousePos = event->globalPos();
     mLastMouseScenePos = mapToScene(viewport()->mapFromGlobal(mLastMousePos));
+
+    hoverTileName(mLastMouseScenePos);
+
 }
 
 void MapView::handlePinchGesture(QPinchGesture *pinch)

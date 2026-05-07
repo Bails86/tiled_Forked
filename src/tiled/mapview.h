@@ -103,7 +103,6 @@ protected:
 
     int hoverTileName(QPointF mousePos);
 
-
 signals:
     void focused();
     void viewRectChanged();
@@ -115,6 +114,9 @@ private:
     void updateViewRect();
     void focusMapObject(MapObject *mapObject);
     void updateCursor();
+
+    //ADDED
+    int lastHoveredCellId = -1;
 
     enum PanDirectionFlag {
         Left    = 0x1,

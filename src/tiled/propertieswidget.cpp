@@ -2725,6 +2725,9 @@ void PropertiesWidget::paste()
     auto clipboardManager = ClipboardManager::instance();
     auto focusedProperty = mPropertiesView->focusedProperty();
 
+    QMap<QString, QVariant> properties = clipboardManager->properties();
+
+
     if (clipboardManager->hasListValues() && focusedProperty) {
         // Either the focused property or its parent should be a list
         // property to paste list values into.
@@ -2762,6 +2765,8 @@ void PropertiesWidget::paste()
         return;
 
     const QList<Object *> objects = mDocument->currentObjects();
+
+
     if (objects.isEmpty())
         return;
 

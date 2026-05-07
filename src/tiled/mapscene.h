@@ -146,6 +146,8 @@ private:
     QRectF mViewRect;
     QColor mDefaultBackgroundColor;
     QColor mOverrideBackgroundColor;
+
+
 };
 
 /**
