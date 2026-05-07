@@ -247,6 +247,8 @@ Tile *Tile::clone(Tileset *tileset) const
     c->mImageRect = mImageRect;
     c->mImageStatus = mImageStatus;
     c->mProbability = mProbability;
+    c->mName = mName;
+
 
     if (mObjectGroup)
         c->mObjectGroup.reset(mObjectGroup->clone());

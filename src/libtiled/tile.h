@@ -98,6 +98,9 @@ public:
     qreal probability() const;
     void setProbability(qreal probability);
 
+    const QString &name() const;
+    void setName(const QString &name);
+
     ObjectGroup *objectGroup() const;
     void setObjectGroup(std::unique_ptr<ObjectGroup> objectGroup);
     void swapObjectGroup(std::unique_ptr<ObjectGroup> &objectGroup);
@@ -124,6 +127,8 @@ private:
     LoadingStatus mImageStatus;
     qreal mProbability;
     std::unique_ptr<ObjectGroup> mObjectGroup;
+    QString mName;
+
 
     QVector<Frame> mFrames;
     int mCurrentFrameIndex;
@@ -248,6 +253,24 @@ inline void Tile::setImageStatus(LoadingStatus status)
     mImageStatus = status;
 }
 
+/**
+ * Returns the name of this tile.
+ */
+inline const QString &Tile::name() const
+{
+    return mName;
+}
+
+/**
+ * Sets the name of this tile.
+ */
+inline void Tile::setName(const QString &name)
+{
+    mName = name;
+}
+
 } // namespace Tiled
+
+
 
 Q_DECLARE_METATYPE(Tiled::Tile*)
