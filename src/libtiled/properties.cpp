@@ -216,7 +216,9 @@ QJsonArray propertiesToJson(const Properties &properties, const ExportContext &c
 
         QJsonObject propertyObject;
         propertyObject.insert(QLatin1String("name"), name);
-        propertyObject.insert(QLatin1String("value"), QJsonValue::fromVariant(exportValue.value));
+
+        //Conversion replaced to allow successful copying of list values
+        propertyObject.insert(QLatin1String("value"), it.value().toJsonValue());
         propertyObject.insert(QLatin1String("type"), exportValue.typeName);
         propertyObject.insert(QLatin1String("propertytype"), exportValue.propertyTypeName);
 
