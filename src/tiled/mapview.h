@@ -115,9 +115,6 @@ private:
     void focusMapObject(MapObject *mapObject);
     void updateCursor();
 
-    //ADDED
-    int lastHoveredCellId = -1;
-
     enum PanDirectionFlag {
         Left    = 0x1,
         Right   = 0x2,
@@ -145,9 +142,9 @@ private:
     QPointF mInitialCenterPos;
     QRectF mViewRect;
     Zoomable *mZoomable;
+    int lastHoveredCellId = -1;
 
     PanDirections mPanDirections;
-    int lastHoveredCellId = -1;
     TileAnimationDriver *mPanningDriver;
 };
 
