@@ -112,6 +112,7 @@ private:
     void updateViewRect();
     void focusMapObject(MapObject *mapObject);
     void updateCursor();
+    int hoverTileName(QPointF mousePos);
 
     enum PanDirectionFlag {
         Left    = 0x1,
